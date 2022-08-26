@@ -1,0 +1,12 @@
+=============== Aug 25, 2022 (EDT) ===============
+04:37:28.447955 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+04:37:28.695761 db@open opening
+04:37:28.696103 version@stat F·[] S·0B[] Sc·[]
+04:37:28.701208 db@janitor F·2 G·0
+04:37:28.701244 db@open done T·5.44484ms
+=============== Aug 26, 2022 (EDT) ===============
+03:24:18.613721 memdb@flush N·24682 S·3MiB
+03:24:18.799424 memdb@flush created L0@3 N·24682 S·2MiB "b\x00\x17..7\xeb\x13,v20040":"r\xff\x9a..K\xaf\xd3,v10981"
+03:24:18.799514 version@stat F·[1] S·2MiB[2MiB] Sc·[0.25]
+03:24:18.805877 memdb@flush committed F·1 T·192.041361ms
+03:24:18.807000 journal@remove removed @1
