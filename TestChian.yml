@@ -1,0 +1,89 @@
+Install edge:
+go install github.com/0xPolygon/polygon-edge@develop
+
+
+Initialize folders and validators:
+polygon-edge secrets init --data-dir test-chain-1
+polygon-edge secrets init --data-dir test-chain-2
+polygon-edge secrets init --data-dir test-chain-3
+polygon-edge secrets init --data-dir test-chain-4
+
+  ubuntu@ubuntu2004:~/work/TestCahin$ polygon-edge secrets init --data-dir test-chain-1
+
+    [SECRETS INIT]
+    Public key (address) = 0x8e1281c344cBc45a6b8a60629f136e70522F3d79
+    Node ID              = 16Uiu2HAm39dU8EfvBxmfYZBjcuHnRhf72BdCcJQUManw8tAAKDz1
+
+  ubuntu@ubuntu2004:~/work/TestCahin$ polygon-edge secrets init --data-dir test-chain-2
+
+    [SECRETS INIT]
+    Public key (address) = 0x0D5D0880c798b6d159d07FF33A48872b37bBe3Ca
+    Node ID              = 16Uiu2HAmCUYokg4skdfAvE4audVrMtsK8ubsdwW9mjvYy4hRSXU1
+
+  buntu@ubuntu2004:~/work/TestCahin$ polygon-edge secrets init --data-dir test-chain-3
+
+    [SECRETS INIT]
+    Public key (address) = 0xA4e1F9D056824fd976d0843C7Da865a87da13c89
+    Node ID              = 16Uiu2HAm2cMqr3iHUDKqPr5U2j4jLqVK2uEUjNuFni9Y2WSEmGHu
+
+  ubuntu@ubuntu2004:~/work/TestCahin$ polygon-edge secrets init --data-dir test-chain-4
+
+    [SECRETS INIT]
+    Public key (address) = 0xD833E53d2D011cF1322cb7F08FCD928077B49CDA
+    Node ID              = 16Uiu2HAkwAoC6FydD72XB7NYKRFDTTnCuTzGsZSAs1PirbaACTzV
+
+Writing genesis:
+polygon-edge genesis --consensus ibft --ibft-validators-prefix-path test-chain- --bootnode /ip4/127.0.0.1/tcp/10001/p2p/16Uiu2HAm39dU8EfvBxmfYZBjcuHnRhf72BdCcJQUManw8tAAKDz1 --bootnode /ip4/127.0.0.1/tcp/20001/p2p/16Uiu2HAmCUYokg4skdfAvE4audVrMtsK8ubsdwW9mjvYy4hRSXU1
+
+Staring the nodes: 
+polygon-edge server --data-dir ./test-chain-1 --chain genesis.json --grpc-address :10000 --libp2p :10001 --jsonrpc :10002 --seal
+
+polygon-edge server --data-dir ./test-chain-2 --chain genesis.json --grpc-address :20000 --libp2p :20001 --jsonrpc :20002 --seal
+
+polygon-edge server --data-dir ./test-chain-3 --chain genesis.json --grpc-address :30000 --libp2p :30001 --jsonrpc :30002 --seal
+
+polygon-edge server --data-dir ./test-chain-4 --chain genesis.json --grpc-address :40000 --libp2p :40001 --jsonrpc :40002 --seal
+
+Install Vault:
+sudo apt update && sudo apt install gpg
+
+wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg >/dev/null
+
+gpg --no-default-keyring --keyring /usr/share/keyrings/hashicorp-archive-keyring.gpg --fingerprint
+
+echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+
+sudo apt update && sudo apt install vault
+
+sudo apt update && sudo apt install vault
+
+Starting the Server:
+vault server -dev
+
+export VAULT_ADDR='http://127.0.0.1:8200'
+
+export VAULT_TOKEN="hvs.stRfpyLiCx4ZMumBFKQpzSzn"
+
+Secret Manager:
+polygon-edge secrets generate --dir <PATH> --token <TOKEN> --server-url <SERVER_URL> --name <NODE_NAME>
+polygon-edge secrets generate --dir ./secretsManagerConfig.json --token hvs.stRfpyLiCx4ZMumBFKQpzSzn --server-url 'http://127.0.0.1:8200' --name testNode
+
+polygon-edge secrets init --config ./secretsManagerConfig.json
+    [SECRETS INIT]
+      Public key (address) = 0x436C4750EaC75f746a428357192585213f1C4A08
+      Node ID              = 16Uiu2HAmKw8eSQn4tzwVwY99eZemLMazxDVn3bDKjUFLoi5UGuYQ
+
+
+polygon-edge genesis --ibft-validator 0x436C4750EaC75f746a428357192585213f1C4A08       //Might need to delete genesis file and run the command below
+
+Create a genesis file with a premined account:
+polygon-edge genesis --ibft-validator 0x436C4750EaC75f746a428357192585213f1C4A08 --bootnode /ip4/127.0.0.1/tcp/10001/p2p/16Uiu2HAm39dU8EfvBxmfYZBjcuHnRhf72BdCcJQUManw8tAAKDz1 --bootnode /ip4/127.0.0.1/tcp/20001/p2p/16Uiu2HAmCUYokg4skdfAvE4audVrMtsK8ubsdwW9mjvYy4hRSXU1 --premine 0x1010101010101010101010101010101010101010
+
+polygon-edge server --chain genesis.json --dev --log-level debug --data-dir ./validator
+
+curl -X POST --data '{"jsonrpc":"2.0","method":"eth_getBalance","params":["0x1010101010101010101010101010101010101010", "latest"],"id":1}' localhost:8545
+
+
+To get Peer information:
+polygon-edge peers list --grpc-address 127.0.0.1:10000
+
